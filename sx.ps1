@@ -49,7 +49,7 @@ function Get-PIN ($PIN0){
     Write-Output $PIN
 }
 ##TPlink,Mercury,Fast
-function Dial-Router1(){
+function Dial-Router(){
     [void][Reflection.Assembly]::LoadWithPartialName("System.Web")
     $PIN_urlencoded = [Web.HttpUtility]::UrlEncode("Get-PIN($username)")
     $RouterUrl = "192.168.1.1"
@@ -60,7 +60,7 @@ function Dial-Router1(){
     $Authorization = "Basic "+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($RouterUserName+":"+$RouterPassword))  
     $headers = @{Authorization = $Authorization;Cookie = 'Authorization='+$Authorization;"Accept-Encoding" = "gzip,deflate,sdch";Referer = $RouterRequest} 
     $response = Invoke-WebRequest -Uri $RouterRequest -Headers $headers -UseBasicParsing
-    $getip="IP : "+(iwr http://www.cz88.net/ip/viewip468_25.aspx -TimeoutSec 2).Links[0].innerText
+    $getip="IP : "+(Invoke-WebRequest http://www.cz88.net/ip/viewip468_25.aspx -TimeoutSec 2).Links[0].innerText
     Write-Output $getip
 }
 
@@ -68,4 +68,5 @@ function Dial-Router1(){
 $username = "chinanet@XY"
 $password = "123456"
 
-if ($args -eq "r") {Dial-Router1} else {rasdial ChinaNetSNWide "Get-PIN($username)" $password}
+##拨号
+if ($args -eq "r") {Dial-Router} else {rasdial ChinaNetSNWide "Get-PIN($username)" $password}
