@@ -59,7 +59,7 @@ function Dial-Router1(){
     $RouterRequest = "http://"+$RouterUrl+":"+$RouterPort+"/userRpm/PPPoECfgRpm.htm?wantype=2&VnetPap=0&acc=$PIN_urlencoded&psw=$password&confirm=$password&SecType=1&linktype=4&waittime2=0&Connect=%C1%AC+%BD%D3"
     $Authorization = "Basic "+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($RouterUserName+":"+$RouterPassword))  
     $headers = @{Authorization = $Authorization;Cookie = 'Authorization='+$Authorization;"Accept-Encoding" = "gzip,deflate,sdch";Referer = $RouterRequest} 
-    #$response = Invoke-WebRequest -Uri $RouterRequest -Headers $headers -UseBasicParsing
+    $response = Invoke-WebRequest -Uri $RouterRequest -Headers $headers -UseBasicParsing
     $getip="IP : "+(iwr http://www.cz88.net/ip/viewip468_25.aspx -TimeoutSec 2).Links[0].innerText
     Write-Output $getip
 }
