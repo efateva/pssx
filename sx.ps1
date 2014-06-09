@@ -1,4 +1,4 @@
-##用户名加密
+﻿##用户名加密
 function Shift-Right ([int]$numob,[int]$bits){
     $numres=[Math]::Floor(($numob/[Math]::Pow(2,$bits)))
     Write-Output $numres
@@ -48,24 +48,28 @@ function Get-PIN ($PIN0){
     $PIN = "`r`n"+$PIN2+$pk+$username
     Write-Output $PIN
 }
+##Windows
+function Dial-Windows(){
+    rasdial Netkeeper "Get-PIN($username)" $password
+}
 ##TPlink,Mercury,Fast
-function Dial-Router1(){
+function Dial-Router(){
     [void][Reflection.Assembly]::LoadWithPartialName("System.Web")
     $PIN_urlencoded = [Web.HttpUtility]::UrlEncode("Get-PIN($username)")
     $RouterUrl = "192.168.1.1"
     $RouterPort = "80"
     $RouterUserName = "admin"
     $RouterPassword = "admin"
-    $RouterRequest = "http://"+$RouterUrl+":"+$RouterPort+"/userRpm/PPPoECfgRpm.htm?wantype=2&VnetPap=0&acc=$PIN_urlencoded&psw=$password&confirm=$password&SecType=1&linktype=4&waittime2=0&Connect=%C1%AC+%BD%D3"
     $Authorization = "Basic "+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($RouterUserName+":"+$RouterPassword))  
     $headers = @{Authorization = $Authorization;Cookie = 'Authorization='+$Authorization;"Accept-Encoding" = "gzip,deflate,sdch";Referer = $RouterRequest} 
-    $response = Invoke-WebRequest -Uri $RouterRequest -Headers $headers -UseBasicParsing
-    $getip="IP : "+(iwr http://www.cz88.net/ip/viewip468_25.aspx -TimeoutSec 2).Links[0].innerText
+    $RouterRequest = "http://"+$RouterUrl+":"+$RouterPort+"/userRpm/PPPoECfgRpm.htm?wantype=2&VnetPap=0&acc=$PIN_urlencoded&psw=$password&confirm=$password&SecType=1&linktype=4&waittime2=0&Connect=%C1%AC+%BD%D3"
+    $response = Invoke-WebRequest $RouterRequest -Headers $headers -UseBasicParsing
+    $getip="IP : "+(Invoke-WebRequest http://www.cz88.net/ip/viewip468_25.aspx -TimeoutSec 2).Links[0].innerText
     Write-Output $getip
 }
-
 ##闪讯账户
-$username = "chinanet@XY"
+$username = "chinanet@xy"
 $password = "123456"
-
-if ($args -eq "r") {Dial-Router1} else {rasdial ChinaNetSNWide "Get-PIN($username)" $password}
+##拨号
+#Dial-Router  #拨路由
+#Dial-Windows #拨Windows
