@@ -13,8 +13,17 @@ Netkeeper for Powershell
  
 Usage
 -----
-In Powershell
+First edit sx.ps1 to config your Shanxun account and router parameters:
 
-PS YourPath> .\sx.ps1
-
-PS YourPath> .\sx.ps1 r
+    ...
+    $RouterUrl = "192.168.1.1"
+    $RouterPort = "80"
+    $RouterUserName = "admin"
+    $RouterPassword = "admin"
+    ...
+    ##闪讯账户
+   	$username = "chinanet@xy"
+   	$password = "123456"
+	
+ - In Powershell:  PS YourPath> .\sx.ps1
+ - In Explorer  :  Right click on sx.ps1 and choose "使用Powershell运行"
