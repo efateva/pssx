@@ -51,6 +51,7 @@ function Get-PIN ($PIN0){
 ##Windows
 function Dial-Windows(){
     rasdial Netkeeper "Get-PIN($username)" $password
+    #netsh wlan start hostednetwork
 }
 ##TPlink,Mercury,Fast
 function Dial-Router(){
