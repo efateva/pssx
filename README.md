@@ -24,10 +24,10 @@ First edit sx.ps1 to config:
     ##闪讯账户
     $username = "chinanet@xy"
     $password = "123456"
-    ##拨号 (Choose your way of dialing)
+    ##拨号
     #Dial-Router  #拨路由 (delete the first "#" to take effect)
     #Dial-Windows #拨Windows (delete the first "#" to take effect)
     
 	
  - In Powershell:  PS YourPath> .\sx.ps1
- - In Explorer  :  Right click on sx.ps1 and choose "使用Powershell运行"
+ - In Explorer  :  Right click on sx.ps1 and choose "Run with Powershell"
