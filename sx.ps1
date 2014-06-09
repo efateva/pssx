@@ -1,4 +1,4 @@
-﻿##用户名加密
+##用户名加密
 function Shift-Right ([int]$numob,[int]$bits){
     $numres=[Math]::Floor(($numob/[Math]::Pow(2,$bits)))
     Write-Output $numres
@@ -50,13 +50,15 @@ function Get-PIN ($PIN0){
 }
 ##Windows
 function Dial-Windows(){
-    rasdial Netkeeper "Get-PIN($username)" $password
+    $realusername = Get-PIN($username)
+    rasdial Netkeeper $realusername $password
     #netsh wlan start hostednetwork
 }
 ##TPlink,Mercury,Fast
 function Dial-Router(){
     [void][Reflection.Assembly]::LoadWithPartialName("System.Web")
-    $PIN_urlencoded = [Web.HttpUtility]::UrlEncode("Get-PIN($username)")
+    $realusername = Get-PIN($username)
+    $PIN_urlencoded = [Web.HttpUtility]::UrlEncode("$realusername")
     $RouterUrl = "192.168.1.1"
     $RouterPort = "80"
     $RouterUserName = "admin"
