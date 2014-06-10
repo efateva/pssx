@@ -65,9 +65,7 @@ function Dial-Netkeeper($Dialway){
             1 { $RouterRequest += "/userRpm/PPPoECfgRpm.htm?wantype=2&VnetPap=0&acc=$PIN_urlencoded&psw=$password&confirm=$password&SecType=1&linktype=4&waittime2=0&Connect=%C1%AC+%BD%D3"
                 $headers += @{Cookie = 'Authorization='+$Authorization;Referer = $RouterRequest}
                 $response = Invoke-WebRequest $RouterRequest -Headers $headers -UseBasicParsing }
-            2 { $RouterRequest += "/wan_work_mode_pppoeset.cgi"
-                $response = Invoke-WebRequest $RouterRequest -Headers $headers -UseBasicParsing -Method Post -Body "mac_clone_value=null&mtu_value=1492&pppoe_connect_mode=3&apply=+%D3%A6%D3%C3+&pppoe_account=$PIN_urlencoded&pppoe_password=$password" }
-            3 { $RouterRequest += "/ppp.cgi?type=ppp0_apply&L_sod=DISABL&autostart=ENABLE&L_sod=DISABLE&idletime=0&L_ipnego=ENABLE&T_to_hour=0&T_to_min=0&ppp_mtu=1492&user_name=$PIN_urlencoded&password=$password"
+            2 { $RouterRequest += "/ppp.cgi?type=ppp0_apply&L_sod=DISABL&autostart=ENABLE&L_sod=DISABLE&idletime=0&L_ipnego=ENABLE&T_to_hour=0&T_to_min=0&ppp_mtu=1492&user_name=$PIN_urlencoded&password=$password"
                 $response = Invoke-WebRequest $RouterRequest -Headers $headers -UseBasicParsing }
         }
         $getip = "IP : "+(Invoke-WebRequest http://www.cz88.net/ip/viewip468_25.aspx -TimeoutSec 2).Links[0].innerText
@@ -90,6 +88,5 @@ $pppname = "Netkeeper"
 ## Main
 # 0 Windows
 # 1 TPlink/Mercury/Fast
-# 2 Netcore
-# 3 Alpha
+# 2 Alpha
 Dial-Netkeeper(0)
