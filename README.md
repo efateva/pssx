@@ -9,7 +9,7 @@ Features
 Netkeeper for Powershell
  - Including username Encryption.
  - TPlink/Mercury/Fast routers support.
- - Netcore/Alpha routers support(DEMO).
+ - Alpha routers support(DEMO).
  - Windows rasdial support.
  
 Usage
@@ -29,8 +29,7 @@ First edit sx.ps1 to config:
     ## Main
     # 0 Windows
     # 1 TPlink/Mercury/Fast
-    # 2 Netcore
-    # 3 Alpha
+    # 2 Alpha
     Dial-Netkeeper(0)
     
 	
