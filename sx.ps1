@@ -1,4 +1,4 @@
-##用户名加密
+﻿## Encoding Username
 function Shift-Right ([int]$numob,[int]$bits){
     $numres=[Math]::Floor(($numob/[Math]::Pow(2,$bits)))
     Write-Output $numres
@@ -46,33 +46,50 @@ function Get-PIN ($PIN0){
         $PIN2 += [convert]::ToChar($PIN27[$i])
     }
     $PIN = "`r`n"+$PIN2+$pk+$username
-    Write-Output $PIN
+    $PIN
 }
-##Windows
-function Dial-Windows(){
+## Dial
+function Dial-Netkeeper($Dialway){
     $realusername = Get-PIN($username)
-    rasdial Netkeeper $realusername $password
-    #netsh wlan start hostednetwork
+    if ($Dialway -eq 0){
+        rasdial $pppname $realusername $password
+        #netsh wlan start hostednetwork
+    }
+    else {    
+        [void][Reflection.Assembly]::LoadWithPartialName("System.Web")
+        $PIN_urlencoded = [Web.HttpUtility]::UrlEncode("$realusername")
+        $Authorization = "Basic "+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($RouterUserName+":"+$RouterPassword))
+        $RouterRequest = "http://"+$RouterUrl+":"+$RouterPort
+        $headers = @{Authorization = $Authorization;"Accept-Encoding" = "gzip,deflate,sdch"}
+        switch ($Dialway){
+            1 { $RouterRequest += "/userRpm/PPPoECfgRpm.htm?wantype=2&VnetPap=0&acc=$PIN_urlencoded&psw=$password&confirm=$password&SecType=1&linktype=4&waittime2=0&Connect=%C1%AC+%BD%D3"
+                $headers += @{Cookie = 'Authorization='+$Authorization;Referer = $RouterRequest}
+                $response = Invoke-WebRequest $RouterRequest -Headers $headers -UseBasicParsing }
+            2 { $RouterRequest += "/wan_work_mode_pppoeset.cgi"
+                $response = Invoke-WebRequest $RouterRequest -Headers $headers -UseBasicParsing -Method Post -Body "mac_clone_value=null&mtu_value=1492&pppoe_connect_mode=3&apply=+%D3%A6%D3%C3+&pppoe_account=$PIN_urlencoded&pppoe_password=$password" }
+            3 { $RouterRequest += "/ppp.cgi?type=ppp0_apply&L_sod=DISABL&autostart=ENABLE&L_sod=DISABLE&idletime=0&L_ipnego=ENABLE&T_to_hour=0&T_to_min=0&ppp_mtu=1492&user_name=$PIN_urlencoded&password=$password"
+                $response = Invoke-WebRequest $RouterRequest -Headers $headers -UseBasicParsing }
+        }
+        $getip = "IP : "+(Invoke-WebRequest http://www.cz88.net/ip/viewip468_25.aspx -TimeoutSec 2).Links[0].innerText
+        $getip
+    }
 }
-##TPlink,Mercury,Fast
-function Dial-Router(){
-    [void][Reflection.Assembly]::LoadWithPartialName("System.Web")
-    $realusername = Get-PIN($username)
-    $PIN_urlencoded = [Web.HttpUtility]::UrlEncode("$realusername")
-    $RouterUrl = "192.168.1.1"
-    $RouterPort = "80"
-    $RouterUserName = "admin"
-    $RouterPassword = "admin"
-    $Authorization = "Basic "+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($RouterUserName+":"+$RouterPassword))  
-    $headers = @{Authorization = $Authorization;Cookie = 'Authorization='+$Authorization;"Accept-Encoding" = "gzip,deflate,sdch";Referer = $RouterRequest} 
-    $RouterRequest = "http://"+$RouterUrl+":"+$RouterPort+"/userRpm/PPPoECfgRpm.htm?wantype=2&VnetPap=0&acc=$PIN_urlencoded&psw=$password&confirm=$password&SecType=1&linktype=4&waittime2=0&Connect=%C1%AC+%BD%D3"
-    $response = Invoke-WebRequest $RouterRequest -Headers $headers -UseBasicParsing
-    $getip="IP : "+(Invoke-WebRequest http://www.cz88.net/ip/viewip468_25.aspx -TimeoutSec 2).Links[0].innerText
-    Write-Output $getip
-}
-##闪讯账户
+## Router Parameters
+$RouterUrl = "192.168.1.1"
+$RouterPort = "80"
+$RouterUserName = "admin"
+$RouterPassword = "admin"
+
+## Netkeeper Accounts
 $username = "chinanet@xy"
 $password = "123456"
-##拨号
-#Dial-Router  #拨路由
-#Dial-Windows #拨Windows
+
+## PPPOE Entry
+$pppname = "Netkeeper"
+
+## Main
+# 0 Windows
+# 1 TPlink/Mercury/Fast
+# 2 Netcore
+# 3 Alpha
+Dial-Netkeeper(0)
