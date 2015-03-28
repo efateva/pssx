@@ -8,7 +8,7 @@ function Shift-Left ([int]$numob,[int]$bits){
     Write-Output $numres
 }
 function Get-PIN ($PIN0){
-    $RAD = "zjxinlisx01"
+    $RAD = "singlenet01" #zjxinlisx01
     $time = (New-Timespan 1/1/1970 $(Get-Date).ToUniversalTime()).TotalSeconds
     $timediv5 = [Math]::Floor($time/5)
     $timehash = @(0,0,0,0)
